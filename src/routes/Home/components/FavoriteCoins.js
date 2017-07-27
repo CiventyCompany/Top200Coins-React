@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { Link } from 'react-router'
 
@@ -6,7 +7,10 @@ function getBadgeCls (coinVal) {
   return `badge ${coinVal > 0 ? 'badge-success' : 'badge-danger'}`
 }
 
-export default ({ selectedCoins = [], onDelete = () => {} }) => (
+const FavoriteCoins = ({
+  selectedCoins = [],
+  onDelete = () => {}
+}) => (
   <article className={`coins-main-info-wrapper ${selectedCoins.length === 0 ? 'invisible' : ''}`}>
     <div className='coins-main-info'>
       <table className='table'>
@@ -23,7 +27,7 @@ export default ({ selectedCoins = [], onDelete = () => {} }) => (
         </thead>
         <tbody>
           {selectedCoins.map((coin) => (
-            <tr key={coin.id}>
+            <tr key={coin.id} className='coin-item'>
               <td>{ coin.rank }</td>
               <td>
                 <Link to={`/coins/${coin.symbol}`}>{ coin.symbol }</Link>
@@ -57,3 +61,10 @@ export default ({ selectedCoins = [], onDelete = () => {} }) => (
     </div>
   </article>
 )
+
+FavoriteCoins.propTypes = {
+  selectedCoins: PropTypes.array,
+  onDelete: PropTypes.func
+}
+
+export default FavoriteCoins

@@ -5,19 +5,34 @@ import { render } from 'enzyme'
 describe('(View) Home', () => {
   let _component
 
-  beforeEach(() => {
-    _component = render(<HomeView />)
+  let props = {
+    loading: true,
+    availvableCoins: [],
+    selectedCoins: [],
+    coinsFilter: '',
+    search: '',
+    toggleCoin: () => {},
+    setCoinsSearch: () => {},
+    setCoinsFilter: () => {}
+  }
+
+  it('Renders preloader if loading', () => {
+    let props = {
+      loading: true,
+    }
+    _component = render(<HomeView {...props} />)
+    const preloader = _component.find('.preloader')
+    expect(preloader).to.exist()
   })
 
-  it('Renders a welcome message', () => {
-    const welcome = _component.find('h4')
-    expect(welcome).to.exist()
-    expect(welcome.text()).to.match(/Welcome!/)
-  })
-
-  it('Renders an awesome duck image', () => {
-    const duck = _component.find('img')
-    expect(duck).to.exist()
-    expect(duck.attr('alt')).to.match(/This is a duck, because Redux!/)
+  it('Has headling \'Top 200 coins\' if loaded', () => {
+    let testProps = {
+      ...props,
+      loading: false,
+    }
+    _component = render(<HomeView {...testProps} />)
+    const node = _component.find('h1')
+    expect(node).to.exist()
+    expect(node.text()).to.equal('Top 200 coins')
   })
 })

@@ -1,6 +1,6 @@
 export default function promiseMiddleware () {
   return (next) => (action) => {
-    const { promise, ...rest } = action  
+    const { promise, ...rest } = action
     if (!promise) {
       return next(action)
     }

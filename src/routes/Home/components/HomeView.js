@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import '../assets/style.scss'
 import ListOfCoins from './ListOfCoins/'
 import FavoriteCoins from './FavoriteCoins'
@@ -6,12 +8,12 @@ import Preloader from 'components/Preloader'
 
 export const HomeView = ({
   loading = true,
-  coins,
-  coinsFilter,
-  setCoinsSearch,
+  availvableCoins,
   selectedCoins,
+  coinsFilter,
   search,
   toggleCoin,
+  setCoinsSearch,
   setCoinsFilter
 }) => (
   <div className='container'>
@@ -21,7 +23,7 @@ export const HomeView = ({
           <section>
             <h1>Top 200 coins</h1>
             <ListOfCoins
-              coins={coins}
+              coins={availvableCoins}
               query={search}
               onCoinClick={toggleCoin}
               onInput={setCoinsSearch}
@@ -33,9 +35,22 @@ export const HomeView = ({
             <FavoriteCoins selectedCoins={selectedCoins} onDelete={toggleCoin} />
           </section>
         </div>
-      )}  
+      )}
     </div>
   </div>
 )
+
+HomeView.propTypes = {
+  loading: PropTypes.bool,
+  availvableCoins: PropTypes.array,
+  selectedCoins: PropTypes.array,
+
+  coinsFilter: PropTypes.string,
+  search: PropTypes.string,
+
+  setCoinsSearch: PropTypes.func,
+  toggleCoin: PropTypes.func,
+  setCoinsFilter: PropTypes.func
+}
 
 export default HomeView

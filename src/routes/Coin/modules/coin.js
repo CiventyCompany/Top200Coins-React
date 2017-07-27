@@ -1,6 +1,8 @@
 import api from '../api'
+
 export const SET_COIN_DATA = 'SET_COIN_DATA'
 export const TOGGLE_SINGLE_COIN_LOADING = 'TOGGLE_SINGLE_COIN_LOADING'
+export const TOGGLE_SINGLE_COIN_LOADING_ERROR = 'TOGGLE_SINGLE_COIN_LOADING_ERROR'
 
 export function setCoinData (data) {
   return {
@@ -16,18 +18,31 @@ export function toggleLoading (isLoading) {
   }
 }
 
+export function toggleLoadingError (error) {
+  return {
+    type: TOGGLE_SINGLE_COIN_LOADING_ERROR,
+    payload: error
+  }
+}
+
 export function loadCoin (id) {
   return (dispatch) => {
     dispatch(toggleLoading(true))
+    dispatch(toggleLoadingError(false))
+
     api.getCoinData(id).then((data) => {
       dispatch(toggleLoading(false))
       dispatch(setCoinData(data))
+    }).catch((error) => {
+      dispatch(toggleLoading(false))
+      dispatch(toggleLoadingError(error))
     })
   }
 }
 
 export const actions = {
-  loadCoin
+  loadCoin,
+  toggleLoading
 }
 
 const ACTION_HANDLERS = {
@@ -42,12 +57,19 @@ const ACTION_HANDLERS = {
       ...state,
       loading: action.payload
     }
+  ),
+  TOGGLE_SINGLE_COIN_LOADING_ERROR: (state, action) => (
+    {
+      ...state,
+      loadingError: action.payload
+    }
   )
 }
 
 const defaultState = {
   data: {},
-  loading: false
+  loading: false,
+  loadingError: false
 }
 export default function coinReducer (state = defaultState, action) {
   const handler = ACTION_HANDLERS[action.type]

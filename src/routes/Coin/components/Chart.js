@@ -1,7 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Line } from 'react-chartjs-2'
 
-const colorOld = '70, 184, 218'
 const color = '217, 83, 79'
 
 function makeData (history, label) {
@@ -30,7 +30,7 @@ function makeData (history, label) {
   }
 }
 
-const options = data =>  ({
+const options = data => ({
   responsive: true,
   legend: {
     display: true,
@@ -38,28 +38,22 @@ const options = data =>  ({
   scales: {
     xAxes: [{
       display: false,
-      // type: 'time',
-      // ticks: {
-      //   autoScip: true,
-      //   minRotation: 45,
-      // },
-      // time: {
-      //   min: 'week',
-      //   max: 'year',
-      //   // round: true
-      // }
     }],
   }
 })
 
-export default function ({
+const Chart = ({
   data,
   history = []
-}) {
-  const chartData = makeData(history, data.long)
-  return (
-    <section>
-      <Line data={chartData} options={options(data)} />
-    </section>
-  )
+}) => (
+  <section>
+    <Line data={makeData(history, data.long)} options={options(data)} />
+  </section>
+)
+
+Chart.propTypes = {
+  data: PropTypes.object,
+  history: PropTypes.array
 }
+
+export default Chart

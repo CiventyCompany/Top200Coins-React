@@ -8,11 +8,8 @@ import api from '../api'
 export const LOAD_COINS = 'LOAD_COINS'
 export const SET_COINS_SEARCH = 'SET_COINS_SEARCH'
 export const TOGGLE_COIN = 'TOGGLE_COIN'
-export const SET_COINS_FILTER = ' SET_COINS_FILTER'
+export const SET_COINS_FILTER = 'SET_COINS_FILTER'
 export const TOGGLE_COINS_LOADING = 'TOGGLE_COINS_LOADING'
-
-
-
 
 export function toggleCoin (id) {
   return {
@@ -21,21 +18,17 @@ export function toggleCoin (id) {
   }
 }
 
-export function setCoins (list) {
+export function setCoins (payload) {
   return {
     type: LOAD_COINS,
-    payload: {
-      list
-    }
+    payload
   }
 }
 
 export function setCoinsSearch (query) {
   return {
     type: SET_COINS_SEARCH,
-    payload: {
-      query
-    }
+    payload: query
   }
 }
 
@@ -46,7 +39,7 @@ export function setCoinsFilter (type) {
   }
 }
 
-export function toggleCoinsLoading (isLoading = true) {
+export function toggleCoinsLoading (isLoading) {
   return {
     type: TOGGLE_COINS_LOADING,
     payload: isLoading
@@ -56,7 +49,7 @@ export function toggleCoinsLoading (isLoading = true) {
 export function loadCoins () {
   return (dispatch) => {
     dispatch(toggleCoinsLoading(true))
-    api.fetchCoins().then(data => {
+    return api.fetchCoins().then(data => {
       dispatch(setCoins(data))
       dispatch(toggleCoinsLoading(false))
     })
@@ -78,23 +71,23 @@ const ACTION_HANDLERS = {
   [LOAD_COINS]: (state, { payload }) => (
     {
       ...state,
-      coinsById: keyBy(payload.list, 'id'),
-      coinsOrder: payload.list.map(coin => coin.id)
+      coinsById: keyBy(payload, 'id'),
+      coinsOrder: payload.map(coin => coin.id)
     }
   ),
   [SET_COINS_SEARCH]: (state, { payload }) => (
     {
       ...state,
-      search: payload.query
+      search: payload
     }
   ),
   [TOGGLE_COIN]: (state, { payload }) => (
     {
       ...state,
       coinsFilter: '',
-      coinsChecked: state.coinsChecked.includes(payload) ?
-        state.coinsChecked.filter(id => id !== payload) :
-        [...state.coinsChecked, payload]
+      coinsChecked: state.coinsChecked.indexOf(payload) > -1
+        ? state.coinsChecked.filter(id => id !== payload)
+        : [...state.coinsChecked, payload]
     }
   ),
   [SET_COINS_FILTER]: (state, { payload }) => (
@@ -104,7 +97,7 @@ const ACTION_HANDLERS = {
       coinsFilter: payload
     }
   ),
-  [TOGGLE_COINS_LOADING]: (state, { payload }) => (
+  [TOGGLE_COINS_LOADING]: (state, { payload = !state.loading }) => (
     {
       ...state,
       loading: payload
@@ -115,7 +108,7 @@ const ACTION_HANDLERS = {
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = {
+export const initialState = {
   coinsById: {},
   coinsOrder: [],
   coinsChecked: [],
